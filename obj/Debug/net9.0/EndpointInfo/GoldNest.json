@@ -84,6 +84,55 @@
         }
       }
     },
+    "/api/loanhistory/{id}": {
+      "get": {
+        "tags": [
+          "Loan"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Loan"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Loan"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Loan"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/{id}": {
       "get": {
         "tags": [
@@ -259,14 +308,14 @@
         }
       }
     },
-    "/api/close/{loanId}": {
-      "put": {
+    "/api/close/{id}": {
+      "post": {
         "tags": [
           "Loan"
         ],
         "parameters": [
           {
-            "name": "loanId",
+            "name": "id",
             "in": "path",
             "required": true,
             "schema": {
@@ -275,28 +324,50 @@
             }
           }
         ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CloseLoanRequest"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CloseLoanRequest"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/CloseLoanRequest"
-              }
-            }
-          }
-        },
         "responses": {
           "200": {
             "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/loans/search": {
+      "get": {
+        "tags": [
+          "Loan"
+        ],
+        "parameters": [
+          {
+            "name": "billNo",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": { }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { }
+                }
+              }
+            }
           }
         }
       }
@@ -337,47 +408,41 @@
             }
           }
         }
-      },
-      "post": {
+      }
+    },
+    "/api/loans/{id}": {
+      "get": {
         "tags": [
           "Loan"
         ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Item"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Item"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/Item"
-              }
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
             }
           }
-        },
+        ],
         "responses": {
           "200": {
             "description": "OK",
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/Item"
+                  "$ref": "#/components/schemas/LoanDetailsDto"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Item"
+                  "$ref": "#/components/schemas/LoanDetailsDto"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Item"
+                  "$ref": "#/components/schemas/LoanDetailsDto"
                 }
               }
             }
@@ -388,16 +453,6 @@
   },
   "components": {
     "schemas": {
-      "CloseLoanRequest": {
-        "type": "object",
-        "properties": {
-          "closeDate": {
-            "type": "string",
-            "format": "date-time"
-          }
-        },
-        "additionalProperties": false
-      },
       "CreateCustomerDto": {
         "type": "object",
         "properties": {
@@ -465,6 +520,11 @@
             "type": "number",
             "format": "double"
           },
+          "interestAmount": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
           "description": {
             "type": "string",
             "nullable": true
@@ -508,6 +568,9 @@
           "amount": {
             "type": "number",
             "format": "double"
+          },
+          "item": {
+            "$ref": "#/components/schemas/Item"
           }
         },
         "additionalProperties": false
@@ -561,6 +624,32 @@
             "items": {
               "$ref": "#/components/schemas/Loan"
             },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CustomerDto": {
+        "type": "object",
+        "properties": {
+          "customerID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "customerName": {
+            "type": "string",
+            "nullable": true
+          },
+          "mobileNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "fatherName": {
+            "type": "string",
+            "nullable": true
+          },
+          "address": {
+            "type": "string",
             "nullable": true
           }
         },
@@ -626,6 +715,11 @@
             "type": "number",
             "format": "double"
           },
+          "interestAmount": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
           "closeDate": {
             "type": "string",
             "format": "date-time",
@@ -648,6 +742,76 @@
               "$ref": "#/components/schemas/PawnedItem"
             },
             "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "LoanCalculationDto": {
+        "type": "object",
+        "properties": {
+          "principal": {
+            "type": "number",
+            "format": "double"
+          },
+          "interestRate": {
+            "type": "number",
+            "format": "double"
+          },
+          "months": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "interestAmount": {
+            "type": "number",
+            "format": "double"
+          },
+          "totalPayable": {
+            "type": "number",
+            "format": "double"
+          }
+        },
+        "additionalProperties": false
+      },
+      "LoanDetailsDto": {
+        "type": "object",
+        "properties": {
+          "loanID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "billNo": {
+            "type": "string",
+            "nullable": true
+          },
+          "loanIssueDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "status": {
+            "type": "string",
+            "nullable": true
+          },
+          "interestRate": {
+            "type": "number",
+            "format": "double"
+          },
+          "amountLoaned": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "customer": {
+            "$ref": "#/components/schemas/CustomerDto"
+          },
+          "pawnedItems": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PawnedItemDto"
+            },
+            "nullable": true
+          },
+          "calculation": {
+            "$ref": "#/components/schemas/LoanCalculationDto"
           }
         },
         "additionalProperties": false
@@ -693,6 +857,36 @@
           },
           "item": {
             "$ref": "#/components/schemas/Item"
+          }
+        },
+        "additionalProperties": false
+      },
+      "PawnedItemDto": {
+        "type": "object",
+        "properties": {
+          "pawnedItemID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "itemID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "itemName": {
+            "type": "string",
+            "nullable": true
+          },
+          "grossWeight": {
+            "type": "number",
+            "format": "double"
+          },
+          "netWeight": {
+            "type": "number",
+            "format": "double"
+          },
+          "amount": {
+            "type": "number",
+            "format": "double"
           }
         },
         "additionalProperties": false

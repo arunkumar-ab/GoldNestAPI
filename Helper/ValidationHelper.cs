@@ -17,28 +17,33 @@ public static class ValidationHelper
             return "Father name must contain only letters and be at least 2 characters long.";
         }
 
-        // Email validation
-        if (!new EmailAddressAttribute().IsValid(request.Email))
+        // Email validation (only if email is provided)
+        if (!string.IsNullOrWhiteSpace(request.Email) && !new EmailAddressAttribute().IsValid(request.Email))
         {
             return "Invalid email format.";
         }
 
-        // India-specific phone number validation (Starts with 7, 8, or 9 followed by 9 digits)
-        if (!Regex.IsMatch(request.MobileNumber, @"^[6789]\d{9}$"))
+        // Phone number validation (only if mobile number is provided)
+        if (!string.IsNullOrWhiteSpace(request.MobileNumber) &&
+            !Regex.IsMatch(request.MobileNumber, @"^[6789]\d{9}$"))
         {
             return "Phone number must be a valid 10-digit number starting with 7, 8, or 9.";
         }
 
-        // Pincode validation
-        if(!Regex.IsMatch(request.Pincode.ToString(), @"^\d{6}$"))
-    {
+        // Pincode validation (only if pincode is provided)
+        if (!string.IsNullOrWhiteSpace(request.Pincode?.ToString()) &&
+            !Regex.IsMatch(request.Pincode.ToString(), @"^\d{6}$"))
+        {
             return "Pincode must be exactly 6 digits.";
         }
 
-        if (string.IsNullOrWhiteSpace(request.Area) || !Regex.IsMatch(request.Area, @"^[A-Za-z]{2,}$"))
+        // Area validation (only if area is provided)
+        if (!string.IsNullOrWhiteSpace(request.Area) &&
+            !Regex.IsMatch(request.Area, @"^[A-Za-z]{2,}$"))
         {
             return "Area must contain only letters and be at least 2 characters long.";
         }
+
 
         return null; // No errors
     }

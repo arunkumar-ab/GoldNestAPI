@@ -1,4 +1,6 @@
-﻿namespace GoldNest.Model.DTO
+﻿using GoldNest.Model.Entity;
+
+namespace GoldNest.Model.DTO
 {
     public class CreatePawnedItemDto
     {
@@ -7,6 +9,8 @@
         public decimal GrossWeight { get; set; }
         public decimal NetWeight { get; set; }
         public decimal Amount { get; set; }
+        public Item Item { get; set; }
+
     }
 
 }

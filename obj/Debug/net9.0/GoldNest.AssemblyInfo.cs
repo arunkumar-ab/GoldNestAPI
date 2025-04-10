@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("GoldNest")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+7edb5bf9cad23132a869edefa1da47368bd56f1f")]
 [assembly: System.Reflection.AssemblyProductAttribute("GoldNest")]
 [assembly: System.Reflection.AssemblyTitleAttribute("GoldNest")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

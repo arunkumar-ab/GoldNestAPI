@@ -18,6 +18,7 @@ namespace GoldNest.Model.Entity
         public required string Status { get; set; } = "Open"; // Open/Closed
 
         public required decimal InterestRate { get; set; }
+        public decimal? InterestAmount { get; set; }
 
         public DateTime? CloseDate { get; set; }
         public required decimal AmountLoaned { get; set; }
