@@ -9,7 +9,7 @@ namespace GoldNest.Model.DTO
         public decimal GrossWeight { get; set; }
         public decimal NetWeight { get; set; }
         public decimal Amount { get; set; }
-        public Item Item { get; set; }
+        //public Item Item { get; set; }
 
     }
 

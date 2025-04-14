@@ -23,7 +23,9 @@ namespace GoldNest.Model.DTO
         public string Status { get; set; }
         public decimal InterestRate { get; set; }
         public decimal? AmountLoaned { get; set; }
+        public string? Description { get; set; }
         public CustomerDto Customer { get; set; }
+
         public List<PawnedItemDto> PawnedItems { get; set; }
         public LoanCalculationDto Calculation { get; set; }
     }
@@ -36,6 +38,7 @@ namespace GoldNest.Model.DTO
 
         public string FatherName { get; set; }
         public string Address { get; set; }
+        public string Area { get; set; }
         // Other properties you need, but NOT the Loans collection
     }
 

@@ -146,6 +146,32 @@
   },
   {
     "ContainingType": "GoldNest.Controllers.LoanController",
+    "Method": "AddItem",
+    "RelativePath": "api/items",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "newItem",
+        "Type": "GoldNest.Model.Entity.Item",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "GoldNest.Model.Entity.Item",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "GoldNest.Controllers.LoanController",
     "Method": "GetCustomerLoans",
     "RelativePath": "api/loanhistory/{id}",
     "HttpMethod": "GET",
@@ -252,6 +278,16 @@
         "StatusCode": 200
       }
     ]
+  },
+  {
+    "ContainingType": "GoldNest.Controllers.LoanController",
+    "Method": "GetLoanStats",
+    "RelativePath": "api/LoanStats",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
   },
   {
     "ContainingType": "Program\u002B\u003C\u003Ec",

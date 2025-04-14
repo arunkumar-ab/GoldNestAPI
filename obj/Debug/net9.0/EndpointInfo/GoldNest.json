@@ -408,6 +408,52 @@
             }
           }
         }
+      },
+      "post": {
+        "tags": [
+          "Loan"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Item"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Item"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Item"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Item"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Item"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Item"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/api/loans/{id}": {
@@ -446,6 +492,18 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "/api/LoanStats": {
+      "get": {
+        "tags": [
+          "Loan"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
           }
         }
       }
@@ -568,9 +626,6 @@
           "amount": {
             "type": "number",
             "format": "double"
-          },
-          "item": {
-            "$ref": "#/components/schemas/Item"
           }
         },
         "additionalProperties": false
@@ -649,6 +704,10 @@
             "nullable": true
           },
           "address": {
+            "type": "string",
+            "nullable": true
+          },
+          "area": {
             "type": "string",
             "nullable": true
           }
@@ -798,6 +857,10 @@
           "amountLoaned": {
             "type": "number",
             "format": "double",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
             "nullable": true
           },
           "customer": {

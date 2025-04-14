@@ -167,7 +167,7 @@ namespace GoldNest.Controllers
                 _logger.LogInformation("checking customer selected or not ");
                 // If CustomerID is provided, verify the customer exists
                 // Before creating new customer
-                
+
                 if (request.CustomerID > 0)
                 {
                     _logger.LogInformation("Customer exists");
@@ -490,10 +490,7 @@ namespace GoldNest.Controllers
                 _logger.LogInformation("Attempting to fetch items from database");
 
                 var items = await _dbContext.Item.ToListAsync();
-                if (!items.Any())
-                {
-                    return NotFound(new { message = "No items found." });
-                }
+                
                 return Ok(items);
             }
             catch (Exception ex)
@@ -502,7 +499,30 @@ namespace GoldNest.Controllers
                 return StatusCode(500, new { message = "An error occurred while fetching items.", error = ex.Message });
             }
         }
+        // Add a new item to the database
+        [HttpPost("items")]
+        public async Task<ActionResult<Item>> AddItem([FromBody] Item newItem)
+        {
+            try
+            {
+                _logger.LogInformation("Attempting to add new item to database");
 
+                if (newItem == null)
+                {
+                    return BadRequest(new { message = "Invalid item data." });
+                }
+
+                await _dbContext.Item.AddAsync(newItem);
+                await _dbContext.SaveChangesAsync();
+
+                return CreatedAtAction(nameof(GetItems), new { id = newItem.ItemID }, newItem);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error adding item");
+                return StatusCode(500, new { message = "An error occurred while adding the item.", error = ex.Message });
+            }
+        }
 
         [HttpGet("loans/{id}")]
         public async Task<ActionResult<LoanDetailsDto>> GetLoanDetails(int id)
@@ -536,6 +556,7 @@ namespace GoldNest.Controllers
                     Status = loan.Status,
                     InterestRate = loan.InterestRate,
                     AmountLoaned = loan.AmountLoaned,
+                    Description = loan.Description,
                     Customer = new CustomerDto
                     {
                         CustomerID = loan.Customer.CustomerID,
@@ -552,7 +573,7 @@ namespace GoldNest.Controllers
                         ItemName = item.Item.ItemName,
                         grossWeight = item.GrossWeight,
                         netWeight = item.NetWeight,
-                        Amount =item.Amount
+                        Amount = item.Amount
 
                         // Other properties
                     }).ToList(),
@@ -572,8 +593,65 @@ namespace GoldNest.Controllers
             }
         }
 
-        // Helper method to calculate interest months
-        private static int CalculateInterestMonths(DateTime startDate, DateTime endDate)
+      
+        
+
+            [HttpGet("LoanStats")]
+            public async Task<IActionResult> GetLoanStats()
+            {
+                var today = DateTime.Today;
+
+                // New loans today
+                var newLoansToday = await _dbContext.Loan
+                    .CountAsync(l => l.LoanIssueDate.Date == today);
+
+                // Loans closed today
+                var loansClosedToday = await _dbContext.Loan
+                    .CountAsync(l => l.CloseDate.HasValue && l.CloseDate.Value.Date == today);
+
+                // Open loans
+                var openLoans = await _dbContext.Loan
+                    .CountAsync(l => l.Status == "active");
+
+                // Total amount loaned
+                var totalAmountLoaned = await _dbContext.Loan
+                    .SumAsync(l => l.AmountLoaned);
+
+                // This month interest
+                var firstDayOfMonth = new DateTime(today.Year, today.Month, 1);
+                var lastDayOfMonth = firstDayOfMonth.AddMonths(1).AddDays(-1);
+
+                var thisMonthInterest = await _dbContext.Loan
+                    .Where(l => l.InterestAmount.HasValue &&
+                               (l.CloseDate.HasValue && l.CloseDate.Value >= firstDayOfMonth && l.CloseDate.Value <= lastDayOfMonth) ||
+                               (l.Status == "active"))
+                    .SumAsync(l => l.InterestAmount.Value);
+
+                // Gold and Silver pawned
+                var goldPawnedWeight = await _dbContext.PawnedItems
+                    .Where(p => p.Loan.Status == "active" && p.ItemType.ToLower().Contains("gold"))
+                    .SumAsync(p => p.NetWeight);
+
+                var silverPawnedWeight = await _dbContext.PawnedItems
+                    .Where(p => p.Loan.Status == "active" && p.ItemType.ToLower().Contains("silver"))
+                    .SumAsync(p => p.NetWeight);
+
+                var stats = new
+                {
+                    NewLoansToday = newLoansToday,
+                    LoansClosedToday = loansClosedToday,
+                    OpenLoans = openLoans,
+                    TotalAmountLoaned = totalAmountLoaned,
+                    ThisMonthInterest = thisMonthInterest,
+                    GoldPawnedGrams = goldPawnedWeight,
+                    SilverPawnedGrams = silverPawnedWeight
+                };
+
+                return Ok(stats);
+            }
+
+    // Helper method to calculate interest months
+    private static int CalculateInterestMonths(DateTime startDate, DateTime endDate)
         {
             if (endDate < startDate) return 0;
 
